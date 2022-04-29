@@ -17,20 +17,27 @@ class DataLoader:
         self.prepare()
 
     def split_to_batch(self):
-        data_array = []        
+        data_array = []
         for i in range(0, self.n_samples, self.batch_size):            
             step = self.batch_size
             if i + self.batch_size > self.n_samples:
                 step = self.n_samples - i
-            data_array.append(self.data[i:i+step])
-        return np.array(data_array)
+            data_array.append(np.array(self.data[i:i+step], dtype = np.float32))
+        data_array = np.array(data_array, dtype = object)
+        return data_array
 
     def padding(self):
         for index, i in enumerate(self.data_array):
             if i.shape[0] != self.batch_size:
-                for j in range(i.shape[0], self.batch_size):                    
+                for j in range(i.shape[0], self.batch_size):
                     padd_data = np.zeros(self.sample_shape)
                     self.data_array[index] = np.concatenate((self.data_array[index], padd_data))
+        new_data = [] 
+        for i in self.data_array:
+            new_data.append(i)
+
+        new_data = np.array(new_data)
+        self.data_array = new_data
         return self.data_array
 
     def prepare(self):
@@ -39,10 +46,6 @@ class DataLoader:
         self.padded_data = self.padding()
         final_size = (self.padded_data.shape[0], self.batch_size) + tuple(self.sample_shape[1:])
         self.tensor_data = torch.from_numpy(self.padded_data.reshape(final_size))
-        print(self.tensor_data)
-            
-
-
 
 x = np.random.rand(100, 32, 32, 3)
 d = DataLoader(x)
