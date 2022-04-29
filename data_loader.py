@@ -5,7 +5,7 @@ import pandas as pd
 
 class DataLoader:
 
-    def __init__(self, data, batch_size = 2, shuffle = True):
+    def __init__(self, data, batch_size = 16, shuffle = True):
         self.data = data
         self.batch_size = batch_size
         self.shuffle = shuffle
@@ -13,14 +13,18 @@ class DataLoader:
         self.prepare()
 
     def prepare(self):
-        data_array = []
-        for i in range(0, self.n_samples, self.batch_size):
-            data_array.append(self.data[i:i+self.batch_size])
-        data_array = np.array(data_array)
+        data_array = []        
+        for i in range(0, self.n_samples, self.batch_size):            
+            step = self.batch_size
+            if i + self.batch_size > self.n_samples:
+                step = self.n_samples - i
+            print(step)
+            data_array.append(self.data[i:i+step])
+        data_array = np.array(data_array, dtype = object)
         print(data_array.shape)
 
 
-x = np.random.rand(10).reshape(10, 1)
+x = np.random.rand(100, 32, 32)
 d = DataLoader(x)
 
         
