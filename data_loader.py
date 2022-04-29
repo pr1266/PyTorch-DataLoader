@@ -59,11 +59,14 @@ class DataLoader:
 
     def __getitem__(self, index):
         return self.tensor_data[index]
-        
+
+    def __len__(self):
+        return self.data_len
 
 x = np.random.rand(100, 32, 32, 3)
 d = iter(DataLoader(x))
 print(d[1].shape)
+print(len(d))
 print(next(d).shape)
 
         
