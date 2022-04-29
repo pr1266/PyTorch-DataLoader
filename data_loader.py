@@ -1,7 +1,5 @@
 import torch
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 import os
 os.system('cls')
 
@@ -59,9 +57,13 @@ class DataLoader:
             raise StopIteration
         return self.tensor_data[self.index]
 
+    def __getitem__(self, index):
+        return self.tensor_data[index]
+        
+
 x = np.random.rand(100, 32, 32, 3)
 d = iter(DataLoader(x))
-
+print(d[1].shape)
 print(next(d).shape)
 
         
