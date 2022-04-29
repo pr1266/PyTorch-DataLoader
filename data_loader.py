@@ -29,7 +29,7 @@ class DataLoader:
         for index, i in enumerate(self.data_array):
             if i.shape[0] != self.batch_size:
                 for j in range(i.shape[0], self.batch_size):                    
-                    padd_data = np.zeros(self.sample_shape)                         
+                    padd_data = np.zeros(self.sample_shape)
                     self.data_array[index] = np.concatenate((self.data_array[index], padd_data))
         return self.data_array
 
@@ -37,9 +37,10 @@ class DataLoader:
         
         self.data_array = self.split_to_batch()
         self.padded_data = self.padding()
-        for i in self.padded_data:
-            # print(i.shape)
-            pass
+        final_size = (self.padded_data.shape[0], self.batch_size) + tuple(self.sample_shape[1:])
+        self.tensor_data = torch.from_numpy(self.padded_data.reshape(final_size))
+        print(self.tensor_data)
+            
 
 
 
