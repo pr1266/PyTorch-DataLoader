@@ -8,6 +8,7 @@ os.system('cls')
 class DataLoader:
 
     def __init__(self, data, batch_size = 16, shuffle = True):
+        self.index = 0
         self.data = data
         self.batch_size = batch_size
         self.shuffle = shuffle
@@ -32,6 +33,7 @@ class DataLoader:
                 for j in range(i.shape[0], self.batch_size):
                     padd_data = np.zeros(self.sample_shape)
                     self.data_array[index] = np.concatenate((self.data_array[index], padd_data))
+                    
         new_data = [] 
         for i in self.data_array:
             new_data.append(i)
@@ -46,8 +48,20 @@ class DataLoader:
         self.padded_data = self.padding()
         final_size = (self.padded_data.shape[0], self.batch_size) + tuple(self.sample_shape[1:])
         self.tensor_data = torch.from_numpy(self.padded_data.reshape(final_size))
+        self.data_len = self.padded_data.shape[0]
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        self.index += 0
+        if self.index > self.data_len - 1:
+            raise StopIteration
+        return self.tensor_data[self.index]
 
 x = np.random.rand(100, 32, 32, 3)
-d = DataLoader(x)
+d = iter(DataLoader(x))
+
+print(next(d).shape)
 
         
