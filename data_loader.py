@@ -7,6 +7,10 @@ class DataLoader:
 
     def __init__(self, data, target, batch_size = 16, shuffle = True):
         self.index = 0
+        if shuffle == True:
+            perm = np.random.permutation(len(data))
+            data = data[perm]
+            target = target[perm]
         self.data = data
         self.target = target
         self.batch_size = batch_size
