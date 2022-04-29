@@ -2,6 +2,8 @@ import torch
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
+os.system('cls')
 
 class DataLoader:
 
@@ -11,13 +13,7 @@ class DataLoader:
         self.shuffle = shuffle
         self.n_samples = data.shape[0]
         temp = (1,)
-        self.sample_shape = np.array(temp + data.shape[1:])
-        # temp = tuple()
-        # temp.append(1)
-        # for i in self.sample_shape:
-        #     temp.append(i)
-        # print(temp)
-        print(self.sample_shape)
+        self.sample_shape = np.array(temp + data.shape[1:])        
         self.prepare()
 
     def split_to_batch(self):
@@ -27,22 +23,24 @@ class DataLoader:
             if i + self.batch_size > self.n_samples:
                 step = self.n_samples - i
             data_array.append(self.data[i:i+step])
-        return data_array
+        return np.array(data_array)
 
     def padding(self):
-        for i in self.data_array:
+        for index, i in enumerate(self.data_array):
             if i.shape[0] != self.batch_size:
-                print(i.shape)
-                for j in range(i.shape[0], self.batch_size):
+                for j in range(i.shape[0], self.batch_size):                    
                     padd_data = np.zeros(self.sample_shape)                         
-                    i = np.append(i, padd_data)
-                print(i.shape)
-
+                    self.data_array[index] = np.concatenate((self.data_array[index], padd_data))
+        return self.data_array
 
     def prepare(self):
         
         self.data_array = self.split_to_batch()
         self.padded_data = self.padding()
+        for i in self.padded_data:
+            # print(i.shape)
+            pass
+
 
 
 x = np.random.rand(100, 32, 32, 3)
