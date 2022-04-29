@@ -53,6 +53,8 @@ class DataLoader:
         self.padded_data, self.padded_target = self.padding()
         final_size = (self.padded_data.shape[0], self.batch_size) + tuple(self.sample_shape[1:])
         self.tensor_data = torch.from_numpy(self.padded_data.reshape(final_size))
+        self.tensor_target = torch.from_numpy(self.padded_target.reshape((self.padded_data.shape[0], self.batch_size)))
+        self.tensor_target = self.tensor_target.view(self.tensor_target.shape + (1,))
         self.data_len = self.padded_data.shape[0]
 
     def __iter__(self):
@@ -62,10 +64,10 @@ class DataLoader:
         self.index += 0
         if self.index > self.data_len - 1:
             raise StopIteration
-        return self.tensor_data[self.index]
+        return self.tensor_data[self.index], self.tensor_target[self.index]
 
     def __getitem__(self, index):
-        return self.tensor_data[index]
+        return self.tensor_data[index], self.tensor_target[index]
 
     def __len__(self):
         return self.data_len
@@ -73,8 +75,7 @@ class DataLoader:
 x = np.random.rand(100, 32, 32, 3)
 y = np.random.rand(100, 1)
 d = iter(DataLoader(x, y))
-print(d[1].shape)
 print(len(d))
-print(next(d).shape)
+print(next(d))
 
         
